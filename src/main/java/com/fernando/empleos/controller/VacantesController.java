@@ -28,10 +28,8 @@ public class VacantesController {
   public String verDetalle(@PathVariable("id") int idVacante, Model model){
 
     Vacante vacante = serviceVacante.buscarPorId(idVacante);
-
-    System.out.println("idVacante: " + idVacante);
+ 
     model.addAttribute("vacante", vacante);
-    System.out.println("Vacante"+vacante);
 
     // Buscar los detalles de la vacante en la base de datos...
 
