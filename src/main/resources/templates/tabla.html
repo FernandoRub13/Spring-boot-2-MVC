@@ -13,22 +13,37 @@
     />
   </head>
   <body>
+    <img th:src="@{/images/logo.svg}" >
     <h1>Lista de vacantes</h1>
     <div class="container">
       <table class="table table-bordered table-striped table-hover">
         <tr>
+          <th>Logo</th>
           <th>ID</th>
           <th>Nombre</th>
           <th>Fecha</th>
           <th>Salario</th>
           <th>Descripcion</th>
+          <th>Destacada</th>
+          <th>Detalle</th>
+          <th>Borrar</th>
         </tr>
-        <tr th:each=" vacante : ${vacantes}">
+        <tr th:each="vacante : ${vacantes}">
+          <td><img th:src="@{${'/images/'+ vacante.imagen} }" th:alt="logo" width="50px" ></td>
           <td th:text="${vacante.id}"></td>
           <td th:text="${vacante.nombre}"></td>
           <td th:text="${vacante.fecha}"></td>
           <td th:text="${vacante.salario}"></td>
           <td th:text="${vacante.descripcion}"></td>
+          <!-- <td th:text="${vacante.destacado}? 'Sí' : 'No' "></td> -->
+          <td th:if="${vacante.destacado ==1}" ><span class="badge bg-success" >Destacado</span></td>
+          <td th:unless="${vacante.destacado ==1}" ><span class="badge bg-danger" >No destacado</span></td>
+          <td >
+            <a th:href="@{${'/vacantes/view/'+ vacante.id} }" class="btn btn-primary" >Detalle</a>
+          </td>
+          <td>
+            <a th:href="@{/vacantes/delete(id= ${vacante.id}) }" class="btn btn-danger" >Borrar</a>
+          </td>
         </tr>
       </table>
     </div>
