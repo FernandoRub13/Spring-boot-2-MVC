@@ -79,7 +79,6 @@ public class VacantesServiceImpl implements IVacantesService{
 
   @Override
   public Vacante buscarPorId(Integer idVacante) {
-    
     for (Vacante vacante : lista) {
       if (vacante.getId()==idVacante) {
         return vacante;
@@ -87,5 +86,11 @@ public class VacantesServiceImpl implements IVacantesService{
     }
     return null;
   }
+
+	@Override
+	public void guardar(Vacante vacante) {
+		lista.add(vacante);
+		
+	}
   
 }
