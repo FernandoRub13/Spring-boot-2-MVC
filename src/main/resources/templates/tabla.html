@@ -32,8 +32,8 @@
           <td><img th:src="@{${'/images/'+ vacante.imagen} }" th:alt="logo" width="50px" ></td>
           <td th:text="${vacante.id}"></td>
           <td th:text="${vacante.nombre}"></td>
-          <td th:text="${vacante.fecha}"></td>
-          <td th:text="${vacante.salario}"></td>
+          <td th:text="${#dates.format(vacante.fecha, 'dd-MM-yyyy')}"></td>
+          <td th:text="${ '$'+ #numbers.formatDecimal(vacante.salario, 0, 'COMMA', 2, 'POINT')}"></td>
           <td th:text="${vacante.descripcion}"></td>
           <!-- <td th:text="${vacante.destacado}? 'Sí' : 'No' "></td> -->
           <td th:if="${vacante.destacado ==1}" ><span class="badge bg-success" >Destacado</span></td>

@@ -2,9 +2,20 @@ package com.fernando.empleos.model;
 
 import java.util.Date;
 
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToOne;
+import javax.persistence.Table;
+
+@Entity
+@Table(name = "Vacantes")
 public class Vacante {
 
-
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Integer id;
   private String nombre;
   private String descripcion;
@@ -14,6 +25,9 @@ public class Vacante {
   private String imagen="no-image.svg";
   private String estatus;
   private String detalles;
+  // CREATE TYPE estatus_type as ENUM ('Creada','Aprobada','Eliminada');
+  @OneToOne
+  @JoinColumn(name="idCategoria")
   private Categoria categoria;
 
   public Integer getId() {
@@ -57,6 +71,9 @@ public class Vacante {
   }
   public void setImagen(String imagen) {
     this.imagen = imagen;
+  }
+  public void resetImagen() {
+    this.imagen = null;
   }
   
   public String getEstatus() {

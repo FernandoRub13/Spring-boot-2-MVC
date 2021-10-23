@@ -3,8 +3,7 @@ package com.fernando.empleos.services;
 import java.util.LinkedList;
 import java.util.List;
 
-import com.fernando.empleos.model.Categoria;
-
+import com.fernando.empleos.model.Categoria; 
 import org.springframework.stereotype.Service;
 
 @Service
@@ -69,5 +68,11 @@ public class CategoriasServiceImpl implements ICategoriasService {
     }
     return null;
   }
+
+	@Override
+	public void eliminar(Integer idCategoria) {
+		// TODO Auto-generated method stub
+		
+	}
   
 }
