@@ -3,7 +3,10 @@ package com.fernando.empleos.services;
 import java.util.LinkedList;
 import java.util.List;
 
-import com.fernando.empleos.model.Categoria; 
+import com.fernando.empleos.model.Categoria;
+
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -73,6 +76,12 @@ public class CategoriasServiceImpl implements ICategoriasService {
 	public void eliminar(Integer idCategoria) {
 		// TODO Auto-generated method stub
 		
+	}
+
+	@Override
+	public Page<Categoria> buscarTodas(Pageable pageable) {
+		// TODO Auto-generated method stub
+		return null;
 	}
   
 }

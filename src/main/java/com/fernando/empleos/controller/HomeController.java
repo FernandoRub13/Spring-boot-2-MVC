@@ -6,6 +6,9 @@ import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
+
 import com.fernando.empleos.model.Perfil;
 import com.fernando.empleos.model.Usuario;
 import com.fernando.empleos.model.Vacante;
@@ -17,6 +20,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.propertyeditors.StringTrimmerEditor;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.ExampleMatcher;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -25,7 +32,9 @@ import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
@@ -39,6 +48,9 @@ public class HomeController {
 
 	@Autowired
 	private ICategoriasService serviceCategoria;
+
+	@Autowired
+	private PasswordEncoder passwordEncoder;
 
 /*
   @GetMapping("/tabla")
@@ -83,14 +95,48 @@ public class HomeController {
     return "home";
   }
  
-	@GetMapping("/signup")
+	@GetMapping("/index")
+	public String mostrarIndex(Authentication auth, HttpSession session, Model model) {
+		String username = auth.getName(); 
+		for (GrantedAuthority rol : auth.getAuthorities()) {
+			System.out.println("ROL: "+ rol.getAuthority());
+		}
+
+		if (session.getAttribute("usuario") == null) {
+			Usuario usuario = serviceUsuario.buscarPorUsername(username);
+			usuario.setPassword(null);
+			System.out.println("Usuario: " + usuario);
+			session.setAttribute("usuario", usuario);
+		}
+
+		System.out.println("Nombre de usuario: " + username);
+		return "redirect:/";
+	}
+
+	@GetMapping("/login")
+	public String mostrarLogin() {
+		return "formLogin";
+	}
+
+	@GetMapping("/logout")
+		public String logout(HttpServletRequest request, RedirectAttributes attributes ){
+		SecurityContextLogoutHandler logoutHandler =  new SecurityContextLogoutHandler();
+		logoutHandler.logout(request, null, null);
+		attributes.addFlashAttribute("logout", "Has cerrado sesión exitosamente");
+		return "redirect:/login";
+	}
+	
+	@GetMapping("/signup")	
   public String registrarse(Usuario usuario) {
 		
 		return "usuarios/formUsuario";
 	}
 	
-	@PostMapping("/signup")
+	@PostMapping("/signup")		
 	public String registrarse(Usuario usuario, BindingResult result, RedirectAttributes attributes) {
+		String pwdPlano = usuario.getPassword();
+		String pwdEncriptado = passwordEncoder.encode(pwdPlano);
+		usuario.setPassword(pwdEncriptado);
 		if (result.hasErrors()) {
 			return "usuarios/formUsuario";
 		}
@@ -100,13 +146,13 @@ public class HomeController {
 		Perfil perfil = new Perfil();
 		perfil.setId(3); // Perfil USUARIO
 		serviceUsuario.guardar(usuario);
-		attributes.addFlashAttribute("msg", "Usuario creado con éxito");
+		attributes.addFlashAttribute("msg", "Usuario creado con éxito");	
 		return "redirect:/usuarios/index";
-	
+		
   
 	}
  
-	@GetMapping("/search")
+	@GetMapping("/search")	
 	public String buscar(@ModelAttribute("vacanteSearch") Vacante vacante, Model model) {
 		System.out.println("Buscando por: " + vacante );
 
@@ -117,6 +163,13 @@ public class HomeController {
 		List<Vacante> lista = serviceVacante.buscarByExample(example);
 		model.addAttribute("vacantes", lista);
 		return "home";
+	}
+
+	@GetMapping("/bcrypt/{texto}")	
+	@ResponseBody
+	public String encriptar(@PathVariable String texto) {
+		return texto + " Encriptado en Bcrypt: " + passwordEncoder.encode(texto);
+	
 	}
 
 	//initBinder para String, si los detecta vacios en el DAta Binding los settea a NULL

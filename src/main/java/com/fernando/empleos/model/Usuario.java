@@ -90,7 +90,13 @@ public class Usuario {
   public void setPerfiles(List<Perfil> perfiles) {
     this.perfiles = perfiles;
   }
-  
 
+  @Override
+  public String toString() {
+    return "Usuario [email=" + email + ", estatus=" + estatus + ", fechaRegistro=" + fechaRegistro + ", id=" + id
+        + ", nombre=" + nombre + ", password=" + password + ", perfiles=" + perfiles + ", username=" + username + "]";
+  }
+  
+  
   
 }

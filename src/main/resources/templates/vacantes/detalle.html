@@ -36,7 +36,7 @@
                 <h5 class="card-title"><strong>Categoría: </strong> <span th:text="${vacante.categoria.nombre}" ></span></h5>
                 <h6 class="card-title"><strong>Publicado: </strong> <span th:text="${#dates.format(vacante.fecha, 'dd-MM-yyyy')}" ></span></h6>                
                 <h6 class="card-title"><strong>Salario Ofrecido: </strong><span th:text="${ '$'+ #numbers.formatDecimal(vacante.salario, 0, 'COMMA', 2, 'POINT')}" ></span></h6>
-                <p class="card-text">La descripción corta de la oferta de trabajo</p>
+                <p class="card-text" th:text="${vacante.descripcion}" ></p>
                 
                 <div class="card bg-light mb-3" >
                   <div class="card-body">
@@ -44,7 +44,21 @@
                     <p class="card-text" th:utext="${vacante.detalles}" ></p>
                   </div>
                 </div>   
-                <a class="btn btn-primary" href="#" role="button" title="Quiero aplicar para esta oferta de trabajo."><i class="fas fa-file" aria-hidden="true"></i> Aplicar</a>                            
+                <div sec:authorize="isAnonymous()">
+                  <a class="btn btn-primary" th:href="@{/signup}" role="button" title="Quiero aplicar para esta oferta de trabajo.">
+                    <i class="fas fa-file" aria-hidden="true"></i> Regístrese para Aplicar para esta Vacante</a>
+                </div>
+                <!-- <span th:if="${session.usuario != null}" class="text-light" th:text="'Bienvenido ' + ${session.usuario.nombre}"></span>&nbsp;  -->
+                
+                <div th:if="${usuario== 1}" >
+                  <a class="btn btn-primary" th:href="@{${'/solicitudes/create/'+ vacante.id }}" role="button" title="Quiero aplicar para esta oferta de trabajo.">
+                    <i class="fas fa-file" aria-hidden="true"></i>Aplicar</a>
+                </div>
+                <div th:unless="${usuario == 1}" >
+                  <div class="btn btn-primary disabled" th:href="@{${'/solicitudes/create/'+ vacante.id }}" role="button" title="Quiero aplicar para esta oferta de trabajo.">
+                    <i class="fas fa-file" aria-hidden="true"></i>Aplicar</div>
+                    <p class="text-danger" th:text="${'Acción sólo disponible con perfil de USUARIO'}" > </p>
+                </div>
               </div>
             </div>  
           </div>

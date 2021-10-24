@@ -13,6 +13,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.beans.propertyeditors.CustomDateEditor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -111,7 +113,17 @@ public class VacantesController {
   }
 
   @GetMapping("/view/{id}")
-  public String verDetalle(@PathVariable("id") int idVacante, Model model) {
+  public String verDetalle(@PathVariable("id") int idVacante, 
+  Model model, Authentication auth) {
+    String username = auth.getName(); 
+    int bandera = 0; 
+    for (GrantedAuthority rol : auth.getAuthorities()) {
+      if (rol.getAuthority().equals("USUARIO")) {
+        bandera = 1; 
+      }
+		}
+    model.addAttribute("usuario", bandera);
+    
     Vacante vacante = serviceVacantes.buscarPorId(idVacante);
 
     model.addAttribute("vacante", vacante);
